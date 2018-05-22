@@ -93,8 +93,6 @@ def naive_bayse(data=[], target=[]):
         value = []
         prob = 1
         for x in att:
-            if(x[2] == 0):
-                x[2] = 1
             prob = float(prob) * float(x[2])
         prob = float(prob) * float(target_prob[i])
         value = [classes[i], prob]
@@ -118,27 +116,32 @@ def predict(model=[] ,targetprob=[] , testing_instance = ['r','h','h','f']):
                         if(y[0] == ins):
                             result.append([label,y[2]])
                             break
-        givenprob = []
-        for label in targetprob:
-            total = 1
-            for prob in result:
-                if (label[0] == prob[0]):
-                    total = total * prob[1]
-            givenprob.append([label[0],total])
+        if(result != []):
+            givenprob = []
+            for label in targetprob:
+                total = 1
+                for prob in result:
+                    if (label[0] == prob[0]):
+                        total = total * prob[1]
+                givenprob.append([label[0],total])
+            
+            finalresultvalue = []
+            finalresultlabel = []
+            for label in targetprob:
+                total = 1
+                for prob in givenprob: 
+                    if(label[0] ==  prob[0]):
+                        total = label[1] * prob[1]
+                finalresultvalue.append(round(total,4))
+                finalresultlabel.append(label[0])
+            
+            prediction = np.argmax([finalresultvalue])
+            prediction = finalresultlabel[prediction]
+            #prediciton = [finalresultlabel[prediciton] , finalresultvalue[prediciton]]
         
-        finalresultvalue = []
-        finalresultlabel = []
-        for label in targetprob:
-            total = 1
-            for prob in givenprob: 
-                if(label[0] ==  prob[0]):
-                    total = label[1] * prob[1]
-            finalresultvalue.append(round(total,4))
-            finalresultlabel.append(label[0])
-        
-        prediciton = np.argmax([finalresultvalue])
-        prediciton = [finalresultlabel[prediciton] , finalresultvalue[prediciton]]
-        return prediciton
+            return prediction
+        else:
+            return 'Instances not found in training dataset'
     else:
         return ('Input lenght: ' , len(testing_instance), 'not equal to ', len(model))
       
