@@ -4,7 +4,7 @@ from numpy import genfromtxt
 
 def main():
     model , classesprob= fit('./weather.csv', target_name='play')
-    #print(model)
+    print(model)
 
     ins = genfromtxt( './weather.csv', delimiter=',', dtype = str )
     total = 0 
